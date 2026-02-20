@@ -1,7 +1,9 @@
 package com.spring.Shopsy.controller.user;
 
+import com.spring.Shopsy.exception.ResourceNotFoundException;
 import com.spring.Shopsy.model.Category;
 import com.spring.Shopsy.service.Category.CategoryService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,19 +31,17 @@ public class UserCategoryController {
     }
 
     @PostMapping("categories")
-    public ResponseEntity<String> createCategory(@RequestBody Category category){
+    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
         categoryService.createCategory(category);
         return new ResponseEntity<>("Category added Successfully", HttpStatus.CREATED);
     }
 
     @PutMapping("categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long categoryId, @RequestBody Category category){
-        try {
-            categoryService.updateCategory(categoryId, category);
-            return new ResponseEntity<String>("Category Updated", HttpStatus.OK);
-        }catch (ResponseStatusException ex){
-            return new ResponseEntity<String>("Resource Not Found", HttpStatus.NOT_FOUND);
-        }
+    public ResponseEntity<String> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody Category category){
+
+        categoryService.updateCategory(categoryId, category);
+        return new ResponseEntity<String>("Category Updated", HttpStatus.OK);
+
     }
 
 
