@@ -1,6 +1,7 @@
 package com.spring.Shopsy.controller.admin;
 
 import com.spring.Shopsy.exception.ResourceNotFoundException;
+import com.spring.Shopsy.payload.category.CategoryDTO;
 import com.spring.Shopsy.service.Category.CategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,10 @@ public class AdminCategoryController {
     }
 
     @DeleteMapping("categories/{categoryId}")
-    public ResponseEntity<String> deleteCategory(@PathVariable Long categoryId){
+    public ResponseEntity<CategoryDTO> deleteCategory(@PathVariable Long categoryId){
 
-        String status = categoryService.deleteCategory(categoryId);
-        return new ResponseEntity<>(status, HttpStatus.OK);
+        CategoryDTO categoryDTO = categoryService.deleteCategory(categoryId);
+        return new ResponseEntity<>(categoryDTO, HttpStatus.OK);
 
     }
 

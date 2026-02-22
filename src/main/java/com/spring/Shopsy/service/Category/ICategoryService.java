@@ -1,16 +1,18 @@
 package com.spring.Shopsy.service.Category;
 
 import com.spring.Shopsy.model.Category;
+import com.spring.Shopsy.payload.category.CategoryDTO;
+import com.spring.Shopsy.payload.category.CategoryResponse;
 
 import java.util.List;
 
 public interface ICategoryService {
 
-    List<Category> getAllCategories();
+    CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
 
-    void createCategory(Category category);
+    CategoryDTO createCategory(CategoryDTO category);
 
-    String deleteCategory(Long categoryId);
+    CategoryDTO deleteCategory(Long categoryId);
 
-    Category updateCategory(Long categoryId, Category category);
+    CategoryDTO updateCategory(Long categoryId, CategoryDTO category);
 }

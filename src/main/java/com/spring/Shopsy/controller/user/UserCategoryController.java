@@ -1,7 +1,10 @@
 package com.spring.Shopsy.controller.user;
 
+import com.spring.Shopsy.constant.Values;
 import com.spring.Shopsy.exception.ResourceNotFoundException;
 import com.spring.Shopsy.model.Category;
+import com.spring.Shopsy.payload.category.CategoryDTO;
+import com.spring.Shopsy.payload.category.CategoryResponse;
 import com.spring.Shopsy.service.Category.CategoryService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,22 +28,28 @@ public class UserCategoryController {
     }
 
     @GetMapping("categories")
-    public ResponseEntity<List<Category>> getAllCategories(){
-        List<Category> categories = categoryService.getAllCategories();
-        return new ResponseEntity<List<Category>>(categories, HttpStatus.OK);
+    public ResponseEntity<CategoryResponse> getAllCategories(
+            @RequestParam(name = "pageNumber", defaultValue = Values.DEFAULT_PAGE_NUMBER) Integer pageNumber,
+            @RequestParam(name = "pageSize", defaultValue = Values.DEFAULT_PAGE_SIZE) Integer pageSize,
+            @RequestParam(name = "sortBy", defaultValue = Values.DEFAULT_CATEGORY_SORT_BY) String sortBy,
+            @RequestParam(name = "sortOrder", defaultValue = Values.DEFAULT_SORT_ORDER) String sortOrder
+
+    ){
+        CategoryResponse response = categoryService.getAllCategories(pageNumber, pageSize, sortBy, sortOrder);
+        return new ResponseEntity<CategoryResponse>(response, HttpStatus.OK);
     }
 
     @PostMapping("categories")
-    public ResponseEntity<String> createCategory(@Valid @RequestBody Category category){
-        categoryService.createCategory(category);
-        return new ResponseEntity<>("Category added Successfully", HttpStatus.CREATED);
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryDTO category){
+        CategoryDTO response = categoryService.createCategory(category);
+        return new ResponseEntity<>(response, HttpStatus.CREATED);
     }
 
     @PutMapping("categories/{categoryId}")
-    public ResponseEntity<String> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody Category category){
+    public ResponseEntity<CategoryDTO> updateCategory(@PathVariable Long categoryId, @Valid @RequestBody CategoryDTO category){
 
-        categoryService.updateCategory(categoryId, category);
-        return new ResponseEntity<String>("Category Updated", HttpStatus.OK);
+        CategoryDTO response = categoryService.updateCategory(categoryId, category);
+        return new ResponseEntity<CategoryDTO>(response, HttpStatus.OK);
 
     }
 

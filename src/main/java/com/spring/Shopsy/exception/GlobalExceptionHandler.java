@@ -1,10 +1,12 @@
 package com.spring.Shopsy.exception;
 
 
+import com.spring.Shopsy.payload.ErrorApiResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -15,7 +17,7 @@ import java.util.Map;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<Map<String, String>> methodArgumentNotValid(MethodArgumentNotValidException e){
+    public ResponseEntity<ErrorApiResponse<Map<String, String>>> methodArgumentNotValid(MethodArgumentNotValidException e){
 
         Map<String, String> response = new HashMap<>();
 
@@ -27,22 +29,48 @@ public class GlobalExceptionHandler {
                     response.put(fieldName, message);
                 });
 
+        ErrorApiResponse<Map<String, String>> errorApiResponse = new ErrorApiResponse<>(
+                e.getMessage(),
+                false,
+                response
+        );
 
-        return new ResponseEntity<Map<String, String>>(response, HttpStatus.BAD_REQUEST);
+
+        return new ResponseEntity<ErrorApiResponse<Map<String, String>>>(errorApiResponse, HttpStatus.BAD_REQUEST);
 
     }
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<String> resourceNotFound(ResourceNotFoundException e){
+    public ResponseEntity<ErrorApiResponse<ResourceNotFoundException>> resourceNotFound(ResourceNotFoundException e){
         String message = e.getMessage();
-        return new ResponseEntity<String>(message, HttpStatus.NOT_FOUND);
+        ErrorApiResponse<ResourceNotFoundException> errorApiResponse = new ErrorApiResponse<>(
+          message,
+          false,
+                e
+        );
+        return new ResponseEntity<ErrorApiResponse<ResourceNotFoundException>>(errorApiResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ApiException.class)
-    public ResponseEntity<String> apiException(ApiException e){
+    public ResponseEntity<ErrorApiResponse<ApiException>> apiException(ApiException e){
         String message = e.getMessage();
-        return new ResponseEntity<String>(message, HttpStatus.BAD_REQUEST);
+        ErrorApiResponse<ApiException> errorApiResponse = new ErrorApiResponse<>(
+                message,
+                false,
+                null
+        );
+        return new ResponseEntity<ErrorApiResponse<ApiException>>(errorApiResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorApiResponse<String>> missingServletRequestParametreException(MissingServletRequestParameterException e){
+        ErrorApiResponse<String> errorApiResponse = new ErrorApiResponse<>(
+          e.getMessage(),
+          false,
+          "Please go through request params"
+        );
+        return new ResponseEntity<ErrorApiResponse<String>>(errorApiResponse, HttpStatus.BAD_REQUEST);
     }
 
 
