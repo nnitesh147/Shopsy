@@ -30,7 +30,7 @@ public class GlobalExceptionHandler {
                 });
 
         ErrorApiResponse<Map<String, String>> errorApiResponse = new ErrorApiResponse<>(
-                e.getMessage(),
+                "Invalid Request Body",
                 false,
                 response
         );
@@ -42,14 +42,14 @@ public class GlobalExceptionHandler {
 
 
     @ExceptionHandler(ResourceNotFoundException.class)
-    public ResponseEntity<ErrorApiResponse<ResourceNotFoundException>> resourceNotFound(ResourceNotFoundException e){
+    public ResponseEntity<ErrorApiResponse<String>> resourceNotFound(ResourceNotFoundException e){
         String message = e.getMessage();
-        ErrorApiResponse<ResourceNotFoundException> errorApiResponse = new ErrorApiResponse<>(
+        ErrorApiResponse<String> errorApiResponse = new ErrorApiResponse<>(
           message,
           false,
-                e
+                e.getMessage()
         );
-        return new ResponseEntity<ErrorApiResponse<ResourceNotFoundException>>(errorApiResponse, HttpStatus.NOT_FOUND);
+        return new ResponseEntity<ErrorApiResponse<String>>(errorApiResponse, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(ApiException.class)

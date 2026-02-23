@@ -11,4 +11,5 @@ public class GlobalExceptionMessage {
 
     public static final String NO_CATEGORY_PRESENT = "There is no category created till now";
 
+    public static final String NO_PRODUCT_PRESENT = "There is no product present";
 }

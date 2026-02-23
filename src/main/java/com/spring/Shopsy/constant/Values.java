@@ -6,6 +6,8 @@ public class Values {
     public static final String DEFAULT_PAGE_SIZE = "10";
     public static final String DEFAULT_CATEGORY_SORT_BY = "categoryId";
     public static final String DEFAULT_SORT_ORDER = "asc";
+    public static final String DEFAULT_PRODUCT_SORT_BY = "productId";
+
 
 
 }
