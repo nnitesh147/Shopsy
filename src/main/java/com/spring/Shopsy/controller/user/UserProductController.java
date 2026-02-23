@@ -20,7 +20,7 @@ public class UserProductController {
     ProductService productService;
 
     @GetMapping("/products")
-    public ResponseEntity<ProductResponse> addProduct(
+    public ResponseEntity<ProductResponse> getAllProducts(
             @RequestParam(name = "pageNumber", defaultValue = Values.DEFAULT_PAGE_NUMBER) Integer pageNumber,
             @RequestParam(name = "pageSize", defaultValue = Values.DEFAULT_PAGE_SIZE) Integer pageSize,
             @RequestParam(name = "sortBy", defaultValue = Values.DEFAULT_PRODUCT_SORT_BY) String sortBy,

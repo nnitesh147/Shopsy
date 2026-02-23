@@ -11,4 +11,7 @@ public interface IProductService {
     ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
     ProductResponse getProductWithCategoryId(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
     ProductResponse getProductWithKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder);
+    ProductDTO updateProduct(@Valid ProductDTO productDTO, Long productId);
+
+    ProductDTO deleteProduct(Long productId);
 }

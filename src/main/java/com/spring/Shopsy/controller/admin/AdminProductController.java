@@ -24,4 +24,24 @@ public class AdminProductController {
         return new ResponseEntity<ProductDTO>(product, HttpStatus.CREATED);
 
     }
+    @PutMapping("/products/{productId}")
+    public ResponseEntity<ProductDTO> updateProduct(@Valid @RequestBody ProductDTO productDTO, @PathVariable Long productId){
+
+
+        ProductDTO product = productService.updateProduct(productDTO, productId);
+
+        return new ResponseEntity<ProductDTO>(product, HttpStatus.OK);
+
+    }
+
+    @DeleteMapping("/products/{productId}")
+    public ResponseEntity<ProductDTO> deleteProduct(@PathVariable Long productId){
+
+
+        ProductDTO product = productService.deleteProduct(productId);
+
+        return new ResponseEntity<ProductDTO>(product, HttpStatus.OK);
+
+    }
+
 }

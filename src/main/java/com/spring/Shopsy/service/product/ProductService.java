@@ -148,5 +148,39 @@ public class ProductService implements IProductService{
         return new ProductResponse(response, paginationDetails);
     }
 
+    @Override
+    public ProductDTO updateProduct(ProductDTO productDTO, Long productId) {
+
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product" , "productId", productId));
+
+        double specialPrice = productDTO.getPrice() -
+                ((productDTO.getDiscount()*0.01)*productDTO.getPrice());
+
+        product.setSpecialPrice(specialPrice);
+        product.setProductName(productDTO.getProductName());
+        product.setDiscount(productDTO.getDiscount());
+        product.setPrice(productDTO.getPrice());
+        product.setDescription(productDTO.getDescription());
+        product.setQuantity(productDTO.getQuantity());
+
+        productRepository.save(product);
+
+        return modelMapper.map(product, ProductDTO.class);
+
+    }
+
+    @Override
+    public ProductDTO deleteProduct(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new ResourceNotFoundException("Product" , "productId", productId));
+
+
+        productRepository.delete(product);
+
+        return modelMapper.map(product, ProductDTO.class);
+
+    }
+
 
 }
