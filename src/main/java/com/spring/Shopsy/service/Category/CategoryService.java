@@ -2,6 +2,7 @@ package com.spring.Shopsy.service.Category;
 
 import com.spring.Shopsy.constant.message.GlobalExceptionMessage;
 import com.spring.Shopsy.exception.ApiException;
+import com.spring.Shopsy.exception.InvalidSortFilterException;
 import com.spring.Shopsy.exception.ResourceNotFoundException;
 import com.spring.Shopsy.helper.Pagination;
 import com.spring.Shopsy.model.Category;
@@ -19,6 +20,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
+import static com.spring.Shopsy.constant.Values.CATEGORY_ALLOWED_SORT_FILTERS;
+import static com.spring.Shopsy.constant.Values.PRODUCT_ALLOWED_SORT_FILTERS;
+
 @Service
 public class CategoryService implements ICategoryService{
 
@@ -29,6 +33,10 @@ public class CategoryService implements ICategoryService{
 
     @Override
     public CategoryResponse getAllCategories(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+
+        if(!CATEGORY_ALLOWED_SORT_FILTERS.contains(sortBy)){
+            throw new InvalidSortFilterException("The sort by param passed is not valid, Please choose from below", CATEGORY_ALLOWED_SORT_FILTERS);
+        }
 
         Sort sort = sortOrder.equals("asc")
                     ? Sort.by(sortBy).ascending()

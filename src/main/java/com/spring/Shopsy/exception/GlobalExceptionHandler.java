@@ -73,5 +73,15 @@ public class GlobalExceptionHandler {
         return new ResponseEntity<ErrorApiResponse<String>>(errorApiResponse, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(InvalidSortFilterException.class)
+    public ResponseEntity<ErrorApiResponse<InvalidSortFilterException>> invalidSortFilterException(InvalidSortFilterException e){
+        ErrorApiResponse<InvalidSortFilterException> errorApiResponse = new ErrorApiResponse<>(
+                e.getMessage(),
+                false,
+                new InvalidSortFilterException(e.getMessage(), e.getALLOWED_METHODS())
+        );
+        return new ResponseEntity<ErrorApiResponse<InvalidSortFilterException>>(errorApiResponse, HttpStatus.BAD_REQUEST);
+    }
+
 
 }

@@ -2,6 +2,7 @@ package com.spring.Shopsy.service.product;
 
 import com.spring.Shopsy.constant.message.GlobalExceptionMessage;
 import com.spring.Shopsy.exception.ApiException;
+import com.spring.Shopsy.exception.InvalidSortFilterException;
 import com.spring.Shopsy.exception.ResourceNotFoundException;
 import com.spring.Shopsy.helper.Pagination;
 import com.spring.Shopsy.model.Category;
@@ -22,6 +23,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+import static com.spring.Shopsy.constant.Values.PRODUCT_ALLOWED_SORT_FILTERS;
 
 @Service
 public class ProductService implements IProductService{
@@ -44,6 +47,14 @@ public class ProductService implements IProductService{
                      new ResourceNotFoundException("Category", "CategoryId", categoryId)
                     );
 
+        boolean productExist = productRepository.existsByCategoryAndProductName(category, productDTO.getProductName());
+
+
+        if(productExist){
+            throw new ApiException("Product exist in this category with same product name");
+        }
+
+
         Product product = modelMapper.map(productDTO, Product.class);
 
         double specialPrice = product.getPrice() -
@@ -62,6 +73,11 @@ public class ProductService implements IProductService{
 
     @Override
     public ProductResponse getAllProducts(Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+
+        if(!PRODUCT_ALLOWED_SORT_FILTERS.contains(sortBy)){
+            throw new InvalidSortFilterException("The sort by param passed is not valid, Please choose from below", PRODUCT_ALLOWED_SORT_FILTERS);
+        }
+
         Sort sort = sortOrder.equals("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
@@ -91,6 +107,9 @@ public class ProductService implements IProductService{
     @Override
     public ProductResponse getProductWithCategoryId(Long categoryId, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
 
+        if(!PRODUCT_ALLOWED_SORT_FILTERS.contains(sortBy)){
+            throw new InvalidSortFilterException("The sort by param passed is not valid, Please choose from below", PRODUCT_ALLOWED_SORT_FILTERS);
+        }
 
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() ->
@@ -124,6 +143,11 @@ public class ProductService implements IProductService{
 
     @Override
     public ProductResponse getProductWithKeyword(String keyword, Integer pageNumber, Integer pageSize, String sortBy, String sortOrder) {
+
+        if(!PRODUCT_ALLOWED_SORT_FILTERS.contains(sortBy)){
+            throw new InvalidSortFilterException("The sort by param passed is not valid, Please choose from below", PRODUCT_ALLOWED_SORT_FILTERS);
+        }
+
         Sort sort = sortOrder.equals("asc")
                 ? Sort.by(sortBy).ascending()
                 : Sort.by(sortBy).descending();
