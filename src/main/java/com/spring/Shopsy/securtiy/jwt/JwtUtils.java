@@ -1,6 +1,8 @@
 package com.spring.Shopsy.securtiy.jwt;
 
 
+import com.spring.Shopsy.securtiy.services.CustomUserDetailService;
+import com.spring.Shopsy.securtiy.services.UserDetailsServiceImpl;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -11,6 +13,7 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 import org.springframework.web.util.WebUtils;
 
@@ -26,7 +29,7 @@ public class JwtUtils {
     private final int jwtExpirationMs = 1000000;
     private static final Logger logger = (Logger) LoggerFactory.getLogger(JwtUtils.class);
     private final String jwtSecret = "Secretgsdfgdfhdfgadsfasdgdfghtyjthrgefafsehtyjrt123456789";
-    private String jwtCookie = "shopsy";
+    private final String jwtCookie = "shopsy";
 
 
     public String generateTokenFromUserName(String userName){
@@ -36,6 +39,27 @@ public class JwtUtils {
             .expiration(new Date((new Date()).getTime() + jwtExpirationMs))
             .signWith(key())
             .compact();
+    }
+
+    public ResponseCookie generateJwtCookie(UserDetailsServiceImpl userDetailService){
+
+        String token = generateTokenFromUserName(userDetailService.getUsername());
+
+        return ResponseCookie.from(jwtCookie, token)
+                .path("/api")
+                .maxAge(24 * 60 * 60)
+                .httpOnly(false)
+                .secure(false)
+                .build();
+    }
+    public ResponseCookie generateJwtCookieFromToken(String token){
+
+        return ResponseCookie.from(jwtCookie, token)
+                .path("/api")
+                .maxAge(24 * 60 * 60)
+                .httpOnly(false)
+                .secure(false)
+                .build();
     }
 
     private Key key() {

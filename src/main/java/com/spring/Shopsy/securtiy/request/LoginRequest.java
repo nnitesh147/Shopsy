@@ -1,7 +1,9 @@
 package com.spring.Shopsy.securtiy.request;
 
 import jakarta.validation.constraints.NotBlank;
+import lombok.Data;
 
+@Data
 public class LoginRequest {
 
 
