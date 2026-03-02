@@ -11,6 +11,7 @@ import com.spring.Shopsy.securtiy.jwt.JwtUtils;
 import com.spring.Shopsy.securtiy.request.LoginRequest;
 import com.spring.Shopsy.securtiy.request.SignUp;
 import com.spring.Shopsy.securtiy.response.LoginResponse;
+import com.spring.Shopsy.securtiy.response.MessageResponse;
 import com.spring.Shopsy.securtiy.services.UserDetailsServiceImpl;
 import jakarta.transaction.Transactional;
 import org.modelmapper.ModelMapper;
@@ -72,7 +73,7 @@ public class AuthService implements IAuthService{
         LoginResponse response = new LoginResponse(userDetails.getId(),
                 userDetails.getUsername(), roles, userDetails.getEmail(), token);
 
-        return new AuthenticationResult(response, jwtCookie);
+        return new AuthenticationResult(response, jwtCookie, new MessageResponse("Login Successfull"));
     }
 
     @Override
@@ -135,6 +136,17 @@ public class AuthService implements IAuthService{
 
         ResponseCookie cookie = jwtUtils.generateJwtCookieFromToken(token);
 
-        return new AuthenticationResult(loginResponse, cookie);
+        return new AuthenticationResult(loginResponse, cookie, new MessageResponse("SignUp Successfull"));
+    }
+
+    public AuthenticationResult signOut() {
+
+        ResponseCookie cookie = jwtUtils.getCleanChitCookie();
+
+
+        return new AuthenticationResult(null,
+                cookie, new MessageResponse("Sign out Successfull"));
+
+
     }
 }

@@ -10,6 +10,7 @@ public class Values {
     public static final String DEFAULT_SORT_ORDER = "asc";
     public static final String DEFAULT_PRODUCT_SORT_BY = "productId";
 
+    public static final String DEFAULT_SORT_ORDER_BY = "totalAmount";
     public static final List<String> PRODUCT_ALLOWED_SORT_FILTERS = List.of(
        "productId", "productName" , "quantity", "price" , "discount" , "specialPrice"
     ) ;

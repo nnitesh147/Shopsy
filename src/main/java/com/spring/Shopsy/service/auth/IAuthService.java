@@ -11,6 +11,6 @@ public interface IAuthService {
 
     AuthenticationResult register(SignUp signUpRequest);
 
-
+    AuthenticationResult signOut();
 
 }

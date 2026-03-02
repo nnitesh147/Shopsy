@@ -41,6 +41,15 @@ public class JwtUtils {
             .compact();
     }
 
+    public ResponseCookie getCleanChitCookie(){
+        return ResponseCookie.from(jwtCookie, null)
+                .path("/api")
+                .maxAge(0)
+                .httpOnly(false)
+                .secure(false)
+                .build();
+    }
+
     public ResponseCookie generateJwtCookie(UserDetailsServiceImpl userDetailService){
 
         String token = generateTokenFromUserName(userDetailService.getUsername());

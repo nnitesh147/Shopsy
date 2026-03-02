@@ -52,11 +52,11 @@ public class Address {
     }
 
     @NotBlank
-    @Size(min = 6, message = "PinCode name must be atleast 6 char")
+    @Size(min = 6, message = "PinCode name must be of 6 char", max = 6)
     private String pincode;
 
-    @ToString.Exclude
-    @ManyToMany(mappedBy = "addresses")
-    private List<User> users = new ArrayList<>();
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User user;
 
 }

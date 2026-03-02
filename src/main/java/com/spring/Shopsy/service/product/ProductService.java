@@ -5,14 +5,19 @@ import com.spring.Shopsy.exception.ApiException;
 import com.spring.Shopsy.exception.InvalidSortFilterException;
 import com.spring.Shopsy.exception.ResourceNotFoundException;
 import com.spring.Shopsy.helper.Pagination;
+import com.spring.Shopsy.model.Cart;
 import com.spring.Shopsy.model.Category;
 import com.spring.Shopsy.model.Product;
+import com.spring.Shopsy.payload.cart.CartDTO;
 import com.spring.Shopsy.payload.category.CategoryDTO;
 import com.spring.Shopsy.payload.category.CategoryResponse;
 import com.spring.Shopsy.payload.products.ProductDTO;
 import com.spring.Shopsy.payload.products.ProductResponse;
+import com.spring.Shopsy.repository.ICartRepository;
 import com.spring.Shopsy.repository.ICategoryRepository;
 import com.spring.Shopsy.repository.IProductRepository;
+import com.spring.Shopsy.service.cart.CartService;
+import com.spring.Shopsy.service.cart.ICartService;
 import com.spring.Shopsy.service.product.Helper;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,6 +28,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.spring.Shopsy.constant.Values.PRODUCT_ALLOWED_SORT_FILTERS;
 
@@ -33,11 +39,16 @@ public class ProductService implements IProductService{
     ICategoryRepository categoryRepository;
 
     @Autowired
+    ICartRepository cartRepository;
+
+    @Autowired
+    ICartService cartService;
+
+    @Autowired
     IProductRepository productRepository;
 
     @Autowired
     private ModelMapper modelMapper;
-
 
     @Override
     public ProductDTO addProduct(ProductDTO productDTO, Long categoryId) {
@@ -190,6 +201,21 @@ public class ProductService implements IProductService{
 
         productRepository.save(product);
 
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+
+
+        List<CartDTO> cartDTOS = carts.stream().map(cart -> {
+            CartDTO cardDTO = modelMapper.map(cart, CartDTO.class);
+            List<ProductDTO> products = cart.getCartItems().stream().map(p -> modelMapper.map(p.getProduct(), ProductDTO.class)).collect(Collectors.toList());
+            cardDTO.setProducts(products);
+            return cardDTO;
+        }).toList();
+
+        cartDTOS.forEach(cartDTO -> {
+            cartService.updateProductInCarts(cartDTO.getCartId(), productId);
+        });
+
+
         return modelMapper.map(product, ProductDTO.class);
 
     }
@@ -198,6 +224,10 @@ public class ProductService implements IProductService{
     public ProductDTO deleteProduct(Long productId) {
         Product product = productRepository.findById(productId)
                 .orElseThrow(() -> new ResourceNotFoundException("Product" , "productId", productId));
+
+        List<Cart> carts = cartRepository.findCartsByProductId(productId);
+
+        carts.forEach(cart -> cartService.deleteProductFromCart(cart.getCartId(), productId));
 
 
         productRepository.delete(product);
